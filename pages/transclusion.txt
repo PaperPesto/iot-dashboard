@@ -1,0 +1,4 @@
+Transclusion
+------------
+Inserimento di un documento dentro un altro documento. Nel caso particolare vogliamo inserire una directive dentro un'altra directive.
+NB. Aggiungere transclude alle property delle directive.
