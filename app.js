@@ -61,30 +61,47 @@ myApp.controller('mainController', ['$scope', '$log', function ($scope, $log) {
         return person.address + ', ' + person.city + ', ' + person.state + ' ' + person.zip;
     }
 
-    $scope.connect = function() {
+    // Connessione
+    $scope.connect = function () {
+
+        console.log('connecting client');
         client = mqtt.connect('mqtt://test.mosquitto.org:8080');
 
         client.on('connect', function () {
-            console.log('connected to broker');
-            console.log('aaa', $scope.connectionStatus);
-            $scope.connectionStatus = 'online';
-            console.log('aaa', $scope.connectionStatus);
-            
-            client.publish('testtopico', 'Hello mqtt diahane');
+                
+            $scope.$apply(function(){
+
+                console.log('connected to broker');
     
-            client.subscribe('testtopico', function (err) {
-                if (!err) {
-                    console.log('subscribed!');
-                }
+                $scope.connectionStatus = 'online';
+    
+                client.publish('testtopico', 'Hello mqtt diahane');
+    
+                client.subscribe('testtopico', function (err) {
+                    if (!err) {
+                        console.log('subscribed!');
+                    }
+                })
             })
         })
-    
+
         client.on('message', function (topic, message) {
             // message is Buffer
             console.log('message arriato ' + message.toString());
             // client.end();
         })
+
     }
+
+
+    $scope.disconnect = function () {
+        console.log('disconnecting client');
+        
+        client.end();
+        
+        $scope.connectionStatus = 'offline';
+    }
+    
 
     // var mqtt = require('mqtt') // non serve più boia dell'orso
     // client = mqtt.connect('mqtt://test.mosquitto.org:8080');
