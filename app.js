@@ -22,6 +22,8 @@ myApp.config(function ($routeProvider) {
 
 myApp.controller('mainController', ['$scope', '$log', function ($scope, $log) {
 
+    console.log('hello');
+
     // Model
     $scope.people = [
         {
@@ -49,6 +51,27 @@ myApp.controller('mainController', ['$scope', '$log', function ($scope, $log) {
     $scope.formattedAddress = function (person) {
         return person.address + ', ' + person.city + ', ' + person.state + ' ' + person.zip;
     }
+
+    // var mqtt = require('mqtt')
+    var client = mqtt.connect('mqtt://test.mosquitto.org:8080');
+
+    client.on('connect', function () {
+        console.log('connect');
+        
+        client.publish('presence', 'Hello mqtt');
+
+        client.subscribe('presence', function (err) {
+            if (!err) {
+                console.log('subscribed!');
+            }
+        })
+    })
+
+    client.on('message', function (topic, message) {
+        // message is Buffer
+        console.log(message.toString())
+        client.end()
+    })
 }]);
 
 myApp.controller('secondController', ['$scope', '$log', '$routeParams', function ($scope, $log, $routeParams) {
