@@ -22,33 +22,45 @@ myApp.config(function ($routeProvider) {
 
 myApp.controller('mainController', ['$scope', '$log', function ($scope, $log) {
 
+    var client = null;
+
     $scope.broker = {
         host: "test.mosquitto.org",
         port: 8080
     }
 
-
-    // Create a client instance
-    var client = new Paho.Client("test.mosquitto.org", 8080, "aaa");
+    $scope.connectionStatus = 'offline';
 
 
+    $scope.connect = function () {
+        // Create a client instance
+        client = new Paho.MQTT.Client("test.mosquitto.org", 8080, "aaa");
 
-    // set callback handlers
-    client.onConnectionLost = onConnectionLost;
-    client.onMessageArrived = onMessageArrived;
+        // set callback handlers
+        client.onConnectionLost = onConnectionLost;
+        client.onMessageArrived = onMessageArrived;
 
-    // connect the client
-    client.connect({ onSuccess: onConnect });
+        // connect the client
+        client.connect({ onSuccess: onConnect });
+    }
+
+    $scope.disconnect = function(){
+        client.disconnect();
+        $scope.connectionStatus = 'offline';
+    }
 
 
     // called when the client connects
     function onConnect() {
-        // Once a connection has been made, make a subscription and send a message.
-        console.log("onConnect");
-        client.subscribe("World");
-        message = new Paho.Message("Hello");
-        message.destinationName = "World";
-        client.send(message);
+        $scope.$apply(function () {
+            // Once a connection has been made, make a subscription and send a message.
+            console.log("onConnect");
+            $scope.connectionStatus = 'online';
+            client.subscribe("World");
+            message = new Paho.MQTT.Message("Hello");
+            message.destinationName = "World";
+            client.send(message);
+        });
     }
 
     // called when the client loses its connection
