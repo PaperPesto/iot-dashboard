@@ -58,9 +58,9 @@ myApp.controller('mainController', ['$scope', '$log', function ($scope, $log) {
     client.on('connect', function () {
         console.log('connect');
         
-        client.publish('presence', 'Hello mqtt');
+        client.publish('testtopico', 'Hello mqtt diahane');
 
-        client.subscribe('presence', function (err) {
+        client.subscribe('testtopico', function (err) {
             if (!err) {
                 console.log('subscribed!');
             }
@@ -69,8 +69,8 @@ myApp.controller('mainController', ['$scope', '$log', function ($scope, $log) {
 
     client.on('message', function (topic, message) {
         // message is Buffer
-        console.log(message.toString())
-        client.end()
+        console.log('message arriato ' + message.toString());
+        // client.end();
     })
 }]);
 
