@@ -24,6 +24,15 @@ myApp.controller('mainController', ['$scope', '$log', function ($scope, $log) {
 
     console.log('hello');
 
+    var client = null;  // client non inizializzato
+
+    $scope.broker = {
+        host: "test.mosquitto.org",
+        port: 8080
+    }
+
+    $scope.connectionStatus = 'offline';
+
     // Model
     $scope.people = [
         {
@@ -52,26 +61,34 @@ myApp.controller('mainController', ['$scope', '$log', function ($scope, $log) {
         return person.address + ', ' + person.city + ', ' + person.state + ' ' + person.zip;
     }
 
-    // var mqtt = require('mqtt')
-    var client = mqtt.connect('mqtt://test.mosquitto.org:8080');
+    $scope.connect = function() {
+        client = mqtt.connect('mqtt://test.mosquitto.org:8080');
 
-    client.on('connect', function () {
-        console.log('connect');
-        
-        client.publish('testtopico', 'Hello mqtt diahane');
-
-        client.subscribe('testtopico', function (err) {
-            if (!err) {
-                console.log('subscribed!');
-            }
+        client.on('connect', function () {
+            console.log('connected to broker');
+            console.log('aaa', $scope.connectionStatus);
+            $scope.connectionStatus = 'online';
+            console.log('aaa', $scope.connectionStatus);
+            
+            client.publish('testtopico', 'Hello mqtt diahane');
+    
+            client.subscribe('testtopico', function (err) {
+                if (!err) {
+                    console.log('subscribed!');
+                }
+            })
         })
-    })
+    
+        client.on('message', function (topic, message) {
+            // message is Buffer
+            console.log('message arriato ' + message.toString());
+            // client.end();
+        })
+    }
 
-    client.on('message', function (topic, message) {
-        // message is Buffer
-        console.log('message arriato ' + message.toString());
-        // client.end();
-    })
+    // var mqtt = require('mqtt') // non serve più boia dell'orso
+    // client = mqtt.connect('mqtt://test.mosquitto.org:8080');
+
 }]);
 
 myApp.controller('secondController', ['$scope', '$log', '$routeParams', function ($scope, $log, $routeParams) {

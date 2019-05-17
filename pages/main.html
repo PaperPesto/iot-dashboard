@@ -1,3 +1,15 @@
+<label for="brokerHost">Broker host</label>
+<input type="text" name="brokerHost" id="brokerHost" ng-model="broker.host"><br>
+
+<label for="brokerPort">Broker port</label>
+<input type="text" name="brokerPort" id="brokerPort" ng-model="broker.port"><br>
+
+<button ng-click="connect()">Connect</button>
+<button ng-click="disconnect()">Disconnect</button>
+<div>{{connectionStatus}}</div>
+
+<hr>
+
 <label>Search</label>
 <input type="text" value="Doe" />
 
@@ -5,7 +17,8 @@
 
 <!-- <div class="list-group" ng-repeat="person in people"> -->
 <div class="list-group">
-    <search-result person-object="person" formatted-address-function="formattedAddress(aperson)" ng-repeat="person in people">
+    <search-result person-object="person" formatted-address-function="formattedAddress(aperson)"
+        ng-repeat="person in people">
         *search results may not be valid
     </search-result>
 </div>
