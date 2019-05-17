@@ -22,89 +22,46 @@ myApp.config(function ($routeProvider) {
 
 myApp.controller('mainController', ['$scope', '$log', function ($scope, $log) {
 
-    console.log('hello');
-
-    var client = null;  // client non inizializzato
-
     $scope.broker = {
         host: "test.mosquitto.org",
         port: 8080
     }
 
-    $scope.connectionStatus = 'offline';
 
-    // Model
-    $scope.people = [
-        {
-            name: 'John Doe',
-            address: '555 main St.',
-            city: 'New York',
-            state: 'NY',
-            zip: '11111'
-        },
-        {
-            name: 'Jane Doe',
-            address: '333 second St.',
-            city: 'Buffalo',
-            state: 'NY',
-            zip: '22222'
-        },
-        {
-            name: 'George Doe',
-            address: '111 third St.',
-            city: 'Miami',
-            state: 'FL',
-            zip: '33333'
-        }]
+    // Create a client instance
+    var client = new Paho.Client("test.mosquitto.org", 8080, "aaa");
 
-    $scope.formattedAddress = function (person) {
-        return person.address + ', ' + person.city + ', ' + person.state + ' ' + person.zip;
+
+
+    // set callback handlers
+    client.onConnectionLost = onConnectionLost;
+    client.onMessageArrived = onMessageArrived;
+
+    // connect the client
+    client.connect({ onSuccess: onConnect });
+
+
+    // called when the client connects
+    function onConnect() {
+        // Once a connection has been made, make a subscription and send a message.
+        console.log("onConnect");
+        client.subscribe("World");
+        message = new Paho.Message("Hello");
+        message.destinationName = "World";
+        client.send(message);
     }
 
-    // Connessione
-    $scope.connect = function () {
-
-        console.log('connecting client');
-        client = mqtt.connect('mqtt://test.mosquitto.org:8080');
-
-        client.on('connect', function () {
-                
-            $scope.$apply(function(){
-
-                console.log('connected to broker');
-    
-                $scope.connectionStatus = 'online';
-    
-                client.publish('testtopico', 'Hello mqtt diahane');
-    
-                client.subscribe('testtopico', function (err) {
-                    if (!err) {
-                        console.log('subscribed!');
-                    }
-                })
-            })
-        })
-
-        client.on('message', function (topic, message) {
-            // message is Buffer
-            console.log('message arriato ' + message.toString());
-            // client.end();
-        })
-
+    // called when the client loses its connection
+    function onConnectionLost(responseObject) {
+        if (responseObject.errorCode !== 0) {
+            console.log("onConnectionLost:" + responseObject.errorMessage);
+        }
     }
 
-
-    $scope.disconnect = function () {
-        console.log('disconnecting client');
-        
-        client.end();
-        
-        $scope.connectionStatus = 'offline';
+    // called when a message arrives
+    function onMessageArrived(message) {
+        console.log("onMessageArrived:" + message.payloadString);
     }
-    
-
-    // var mqtt = require('mqtt') // non serve più boia dell'orso
-    // client = mqtt.connect('mqtt://test.mosquitto.org:8080');
 
 }]);
 
