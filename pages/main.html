@@ -14,7 +14,11 @@
 
 <!-- <div class="list-group" ng-repeat="person in people"> -->
 <div class="list-group">
-    <search-result mqtt-message="person" formatted-address-function="formattedAddress(aperson)"
+    <!-- <search-result mqtt-message="person" formatted-address-function="formattedAddress(aperson)"
         ng-repeat="person in people">
-    </search-result>
+    </search-result> -->
+
+    <msg-popup mqtt-message="person" formatted-address-function="formattedAddress(aperson)"
+        ng-repeat="person in people">
+    </msg-popup>
 </div>

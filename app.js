@@ -28,20 +28,8 @@ myApp.controller('mainController', ['$scope', '$log', function ($scope, $log) {
         {
             topic: 'ciao',
             payload: 'bischeroneeeeee'
-        },
-        {
-            topic: 'ciao',
-            payload: 'bischeroneeeeee'
-        },
-        {
-            topic: 'ciao',
-            payload: 'bischeroneeeeee'
-        }]
-
-
-
-
-
+        }
+    ]
 
     var client = null;
 
@@ -111,10 +99,10 @@ myApp.controller('secondController', ['$scope', '$log', '$routeParams', function
 
 }]);
 
-myApp.directive("searchResult", function () {
+myApp.directive("msgPopup", function () {
     return {
         restrict: 'EACM',
-        templateUrl: 'directives/MqttMessagePopup.html',    // View
+        templateUrl: 'directives/msgpopup.html',    // View
         replace: true,
         // Model (isolated scope)
         scope: {
