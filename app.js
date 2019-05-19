@@ -22,6 +22,27 @@ myApp.config(function ($routeProvider) {
 
 myApp.controller('mainController', ['$scope', '$log', function ($scope, $log) {
 
+
+    // Model
+    $scope.people = [
+        {
+            topic: 'ciao',
+            payload: 'bischeroneeeeee'
+        },
+        {
+            topic: 'ciao',
+            payload: 'bischeroneeeeee'
+        },
+        {
+            topic: 'ciao',
+            payload: 'bischeroneeeeee'
+        }]
+
+
+
+
+
+
     var client = null;
 
     $scope.broker = {
@@ -34,7 +55,7 @@ myApp.controller('mainController', ['$scope', '$log', function ($scope, $log) {
 
     $scope.connect = function () {
         // Create a client instance
-        client = new Paho.MQTT.Client("test.mosquitto.org", 8080, "aaa");
+        client = new Paho.MQTT.Client("broker.mqttdashboard.com", 8000, "aaa");
 
         // set callback handlers
         client.onConnectionLost = onConnectionLost;
@@ -44,7 +65,7 @@ myApp.controller('mainController', ['$scope', '$log', function ($scope, $log) {
         client.connect({ onSuccess: onConnect });
     }
 
-    $scope.disconnect = function(){
+    $scope.disconnect = function () {
         client.disconnect();
         $scope.connectionStatus = 'offline';
     }
@@ -72,7 +93,15 @@ myApp.controller('mainController', ['$scope', '$log', function ($scope, $log) {
 
     // called when a message arrives
     function onMessageArrived(message) {
-        console.log("onMessageArrived:" + message.payloadString);
+        $scope.$apply(function () {
+
+            console.log("onMessageArrived:" + message.payloadString);
+
+            $scope.people.push({
+                topic: message.destinationName,
+                payload: message.payloadString
+            });
+        });
     }
 
 }]);
@@ -85,12 +114,11 @@ myApp.controller('secondController', ['$scope', '$log', '$routeParams', function
 myApp.directive("searchResult", function () {
     return {
         restrict: 'EACM',
-        templateUrl: 'directives/searchresult.html',    // View
+        templateUrl: 'directives/MqttMessagePopup.html',    // View
         replace: true,
         // Model (isolated scope)
         scope: {
-            personObject: "=",
-            formattedAddressFunction: "&"
+            mqttMessage: "="
         },
         transclude: true
     }
