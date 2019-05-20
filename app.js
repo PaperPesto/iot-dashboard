@@ -1,3 +1,8 @@
+const status = {
+    ONLINE: 'online',
+    OFFLINE: 'offline'
+}
+
 var myApp = angular.module('myApp', ['ngRoute']);
 
 myApp.config(function ($routeProvider) {
@@ -24,7 +29,10 @@ myApp.controller('mainController', ['$scope', '$log', function ($scope, $log) {
 
 
     // Model
-    $scope.messagesIn = [];
+    $scope.subscription = {
+        topic: undefined,
+        messages: []
+    };
 
     var client = null;
 
@@ -40,7 +48,7 @@ myApp.controller('mainController', ['$scope', '$log', function ($scope, $log) {
         name: 'dash-rendar'
     }
 
-    $scope.connectionStatus = 'offline';
+    $scope.connectionStatus = status.offline;
 
 
     $scope.connect = function () {
@@ -57,7 +65,7 @@ myApp.controller('mainController', ['$scope', '$log', function ($scope, $log) {
 
     $scope.disconnect = function () {
         client.disconnect();
-        $scope.connectionStatus = 'offline';
+        $scope.connectionStatus = status.OFFLINE;
     }
 
 
@@ -66,8 +74,8 @@ myApp.controller('mainController', ['$scope', '$log', function ($scope, $log) {
         $scope.$apply(function () {
             // Once a connection has been made, make a subscription and send a message.
             console.log("onConnect");
-            $scope.connectionStatus = 'online';
-            client.subscribe("World");
+            $scope.connectionStatus = status.ONLINE;
+            client.subscribe($scope.subscription.topic);
             message = new Paho.MQTT.Message("Hello");
             message.destinationName = "World";
             client.send(message);
@@ -78,6 +86,7 @@ myApp.controller('mainController', ['$scope', '$log', function ($scope, $log) {
     function onConnectionLost(responseObject) {
         if (responseObject.errorCode !== 0) {
             console.log("onConnectionLost:" + responseObject.errorMessage);
+            $scope.connectionStatus = status.OFFLINE;
         }
     }
 
@@ -87,7 +96,7 @@ myApp.controller('mainController', ['$scope', '$log', function ($scope, $log) {
 
             console.log("onMessageArrived:" + message.payloadString);
 
-            $scope.messagesIn.push({
+            $scope.subscription.messages.push({
                 topic: message.destinationName,
                 payload: message.payloadString,
                 qos: message.qos,

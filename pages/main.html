@@ -9,16 +9,16 @@
 <div>{{connectionStatus}}</div>
 
 <hr>
+<label for="subscriptionTopic">Topic</label>
+<input type="text" name="subscriptionTopic" id="subscriptionTopic" ng-model="subscription.topic"><br>
+
+<button ng-click="subscribe()">Subscribe</button>
+<hr>
 
 <h3>Messages</h3>
 
-<!-- <div class="list-group" ng-repeat="person in people"> -->
 <div class="list-group">
-    <!-- <search-result mqtt-message="person" formatted-address-function="formattedAddress(aperson)"
-        ng-repeat="person in people">
-    </search-result> -->
-
-    <msg-popup mqtt-message="msgin" formatted-address-function="formattedAddress(aperson)"
-        ng-repeat="msgin in messagesIn">
+    <msg-popup mqtt-message="msgin"
+        ng-repeat="msgin in subscription.messages">
     </msg-popup>
 </div>
