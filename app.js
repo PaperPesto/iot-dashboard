@@ -24,12 +24,7 @@ myApp.controller('mainController', ['$scope', '$log', function ($scope, $log) {
 
 
     // Model
-    $scope.people = [
-        {
-            topic: 'ciao',
-            payload: 'bischeroneeeeee'
-        }
-    ]
+    $scope.messagesIn = [];
 
     var client = null;
 
@@ -85,9 +80,13 @@ myApp.controller('mainController', ['$scope', '$log', function ($scope, $log) {
 
             console.log("onMessageArrived:" + message.payloadString);
 
-            $scope.people.push({
+            console.log('MMM', message);
+
+            $scope.messagesIn.push({
                 topic: message.destinationName,
-                payload: message.payloadString
+                payload: message.payloadString,
+                qos: message.qos,
+                retained: message.retained
             });
         });
     }
