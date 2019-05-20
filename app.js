@@ -28,9 +28,16 @@ myApp.controller('mainController', ['$scope', '$log', function ($scope, $log) {
 
     var client = null;
 
+    // broker.mqttdashboard.com:8000
+    // test.mosquitto.org:8080
+
     $scope.broker = {
         host: "test.mosquitto.org",
         port: 8080
+    }
+
+    $scope.client = {
+        name: 'dash-rendar'
     }
 
     $scope.connectionStatus = 'offline';
@@ -38,7 +45,7 @@ myApp.controller('mainController', ['$scope', '$log', function ($scope, $log) {
 
     $scope.connect = function () {
         // Create a client instance
-        client = new Paho.MQTT.Client("broker.mqttdashboard.com", 8000, "aaa");
+        client = new Paho.MQTT.Client($scope.broker.host, $scope.broker.port, $scope.client.name);
 
         // set callback handlers
         client.onConnectionLost = onConnectionLost;
@@ -79,8 +86,6 @@ myApp.controller('mainController', ['$scope', '$log', function ($scope, $log) {
         $scope.$apply(function () {
 
             console.log("onMessageArrived:" + message.payloadString);
-
-            console.log('MMM', message);
 
             $scope.messagesIn.push({
                 topic: message.destinationName,
