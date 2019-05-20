@@ -34,6 +34,8 @@ myApp.controller('mainController', ['$scope', '$log', function ($scope, $log) {
         messages: []
     };
 
+    $scope.publication = {};
+
     var client = null;
 
     // broker.mqttdashboard.com:8000
@@ -68,6 +70,19 @@ myApp.controller('mainController', ['$scope', '$log', function ($scope, $log) {
         $scope.connectionStatus = status.OFFLINE;
     }
 
+    $scope.subscribe = function () {
+        client.subscribe($scope.subscription.topic);
+        console.log('subscribed to topic', $scope.subscription.topic);
+    }
+
+    $scope.publish = function () {
+        console.log(`publishing message ${$scope.publication.message} on topic ${$scope.publication.topic}`);
+
+        message = new Paho.MQTT.Message($scope.publication.message);
+        message.destinationName = $scope.publication.topic;
+        client.send(message);
+    }
+
 
     // called when the client connects
     function onConnect() {
@@ -75,10 +90,10 @@ myApp.controller('mainController', ['$scope', '$log', function ($scope, $log) {
             // Once a connection has been made, make a subscription and send a message.
             console.log("onConnect");
             $scope.connectionStatus = status.ONLINE;
-            client.subscribe($scope.subscription.topic);
-            message = new Paho.MQTT.Message("Hello");
-            message.destinationName = "World";
-            client.send(message);
+            // client.subscribe($scope.subscription.topic);
+            // message = new Paho.MQTT.Message("Hello");
+            // message.destinationName = "World";
+            // client.send(message);
         });
     }
 

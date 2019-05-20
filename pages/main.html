@@ -8,11 +8,23 @@
 <button ng-click="disconnect()">Disconnect</button>
 <div>{{connectionStatus}}</div>
 
+<!-- Subscription -->
 <hr>
+<h3>Subscription</h3>
 <label for="subscriptionTopic">Topic</label>
 <input type="text" name="subscriptionTopic" id="subscriptionTopic" ng-model="subscription.topic"><br>
 
 <button ng-click="subscribe()">Subscribe</button>
+
+<!-- Publish -->
+<hr>
+<h3>Publication</h3>
+<label for="publicationTopic">Topic</label>
+<input type="text" name="publicationTopic" id="publicationTopic" ng-model="publication.topic"><br>
+<label for="publicationMessage">Message</label>
+<input type="text" name="publicationMessage" id="publicationMessage" ng-model="publication.message"><br>
+
+<button ng-click="publish()">Publish</button>
 <hr>
 
 <h3>Messages</h3>
